@@ -1,8 +1,32 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import Slider from '@react-native-community/slider';
+import Clipboard from 'expo-clipboard';
+
+let charset = 'dsfsdf8323823cmifjf2199129321'
 
 export default function App() {
+  const [password, setPassword] = useState('');
+  const [size, setSize] = useState(10)
+  function generatePass(){
+    
+
+    let pass = '';
+    for(let i = 0, n = charset.length; i < size; i++) {
+      pass += charset.charAt(Math.floor(Math.random() * n));
+    }
+
+    setPassword(pass);
+
+  }
+
+  function copyPass() {
+    Clipboard.setString(password);
+    alert("Senha copiada com sucesso")
+  }
+
+
+
   return (
     <View style={styles.container}>
       <Image
@@ -10,7 +34,7 @@ export default function App() {
         style={styles.logo}
       />
 
-      <Text style={styles.title}>12 Caracteres</Text>
+      <Text style={styles.title}>{size} Caracteres</Text>
 
       <Text style={styles.title}></Text>
 
@@ -21,16 +45,21 @@ export default function App() {
           maximumValue={15}
           minimumTrackTintColor="#ff0000"
           maximumTrackTintColor="#000"
+          value={size}
+          onValueChange={(valor) => setSize(valor.toFixed(0))}
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={generatePass}>
         <Text style={styles.buttonText}>Gerar senha</Text>
       </TouchableOpacity>
 
-      <View style={styles.area}>
-        <Text style={styles.password}>4234242423</Text>
-      </View>
+      {password !== '' && (
+        <View style={styles.area}>
+          <Text style={styles.password} onLongPress={copyPass}>{password}</Text>
+        </View>
+      )}
+      
 
 
     </View>
@@ -63,7 +92,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: 'FFA200',
+    backgroundColor: '#FFA200',
     width: '80%',
     height: 50,
     justifyContent: 'center',
